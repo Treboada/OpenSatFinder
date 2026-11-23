@@ -30,22 +30,6 @@ the needle turns green.
 Android 7.0 (API 24) or later. The GitHub and F-Droid builds are signed with
 different keys, so switching between them means uninstalling first.
 
-## Build
-
-You need JDK 21 and the Android SDK with platform `android-37` and build-tools
-`37.0.0`; Android Studio provides both. The committed wrapper downloads Gradle.
-
-```bash
-./gradlew :app:assembleDebug      # debug APK
-./gradlew :app:testDebugUnitTest  # JVM tests, seconds
-./gradlew :app:lintDebug :app:ktlintCheck
-./gradlew :app:assembleRelease    # unsigned release APK, what F-Droid builds
-```
-
-Instrumented tests (`:app:connectedDebugAndroidTest`) need an emulator or a device.
-Versions are pinned in `gradle/libs.versions.toml` and the wrapper; `./gradlew` is
-the only Gradle to call.
-
 ## Known limits
 
 - **True north needs a position.** Without the permission or a fix, the bearing stays
@@ -60,27 +44,14 @@ the only Gradle to call.
 - **Indoors the first fix can take minutes.** The screen says it is waiting.
 - **Portrait only.** Android 16 ignores that on large screens, so a tablet may rotate.
 
-## Releasing
+## Buy me a coffee
 
-1. Bump `versionCode` and `versionName` in `app/build.gradle.kts`, and add
-   `fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt` for every
-   language (`FastlaneListingTest` fails without it).
-2. Tag the commit with the version (`1.0.0`) and publish a GitHub release for it.
-   `.github/workflows/release.yml` checks that the tag matches `versionName`, runs
-   the tests, builds and signs the APK, and attaches `OpenSatFinder-<version>.apk`.
-3. F-Droid builds the same tag and signs it with its own key.
+If you like OpenSatFinder and would like it to keep getting better - and free
+software to keep being written this way - you can buy me a coffee at
+[Liberapay](https://liberapay.com/caligari/).
 
-Signing uses four repository secrets: `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`,
-`KEY_ALIAS` and `KEY_PASSWORD`. Create the key once, outside the repository:
-
-```bash
-keytool -genkeypair -keystore release.jks -alias opensatfinder \
-    -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=OpenSatFinder"
-base64 -w0 release.jks > release.jks.b64   # macOS: base64 -i release.jks | tr -d '\n'
-```
-
-Keep the keystore and its passwords out of git, and back them up: without the key you
-cannot update an installed copy.
+Nothing is behind a donation: the app is free of charge, free of ads and free of
+tracking for everyone.
 
 ## Licence
 
@@ -94,3 +65,5 @@ Code, comments, commits and issues are in English. Before sending a change:
 ```bash
 ./gradlew :app:testDebugUnitTest :app:lintDebug :app:ktlintCheck
 ```
+
+Build, tests, translations and the release flow are in [CONTRIBUTING.md](CONTRIBUTING.md).
