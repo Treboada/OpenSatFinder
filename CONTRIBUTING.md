@@ -86,7 +86,8 @@ nobody can read or a listing nobody can find.
 4. Publish a GitHub release for that tag. `.github/workflows/release.yml` checks that
    the tag matches `versionName`, runs the unit tests, builds `:app:assembleRelease`,
    signs the APK with `apksigner` and attaches `OpenSatFinder-<version>.apk`.
-5. F-Droid builds the same tag from its own metadata and signs it with its own key.
+5. `.github/workflows/fdroid-repo.yml` indexes the new APK into the F-Droid
+   repository published on GitHub Pages, described below.
 
 Moving or re-cutting a tag means deleting the release first, then the tag, then
 re-tagging: a published release is not edited, it is replaced.
@@ -113,8 +114,48 @@ Then four secrets under **Settings -> Secrets and variables -> Actions**:
 - `KEY_PASSWORD` - the key password (the same one for a PKCS12 keystore).
 
 Keep `release.jks` and its passwords out of git and back them up: without that key you
-cannot update an installed copy. Note that the GitHub build and the F-Droid build carry
-different signatures, so moving from one to the other means uninstalling first.
+cannot update an installed copy. The repository on GitHub Pages ships that same APK, so
+there is no second signature to keep track of.
+
+### Own F-Droid repository
+
+The main F-Droid repository did not take the app yet, because a project with a single
+fresh release has no maintenance history. Until it does, GitHub Pages serves an
+F-Droid repository of our own under
+`https://treboada.github.io/OpenSatFinder/repo`. `.github/workflows/fdroid-repo.yml`
+indexes the APKs attached to the GitHub releases, signs the index and force-pushes the
+result to the `gh-pages` branch; it runs after every published release and can be
+started by hand from the Actions tab.
+
+The index is signed with a second key inside the same keystore, under the alias
+`fdroidrepo`. Add it once to `release.jks`, outside the repository:
+
+```bash
+keytool -genkeypair -keystore release.jks -alias fdroidrepo \
+    -keyalg RSA -keysize 4096 -validity 10000 -storetype pkcs12 \
+    -dname "CN=OpenSatFinder repository"
+base64 -w0 release.jks > release.jks.b64   # macOS: base64 -i release.jks | tr -d '\n'
+keytool -list -v -keystore release.jks -alias fdroidrepo | grep SHA256
+```
+
+Then re-upload `release.jks.b64` as `KEYSTORE_BASE64`. The release workflow keeps signing
+the APK with the `opensatfinder` alias, and the repository workflow signs the index with
+`fdroidrepo`; both use `KEYSTORE_PASSWORD`, because a PKCS12 keystore has a single
+password. No other secret is needed.
+
+If `keytool -list -v` reports a JKS keystore whose key password differs from the store
+password, convert it first, because the workflow passes `KEYSTORE_PASSWORD` for both:
+
+```bash
+keytool -importkeystore -srckeystore release.jks -destkeystore release-p12.jks \
+    -deststoretype pkcs12
+```
+
+And **Settings -> Pages -> Source: Deploy from a branch**, branch `gh-pages`, folder
+`/ (root)`. The fingerprint that `keytool` printed is what the F-Droid client asks for
+when the repository is added. Keep the keystore and its password: a new index key means
+every installed client rejects the repository, and losing the file loses both
+signatures at once.
 
 ## Licence
 

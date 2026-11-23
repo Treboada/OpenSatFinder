@@ -24,11 +24,13 @@ the needle turns green.
 
 - **GitHub Releases** - download `OpenSatFinder-<version>.apk` from
   [Releases](https://github.com/Treboada/OpenSatFinder/releases) and open it.
-- **F-Droid** - the app builds from tags and the listing lives in `fastlane/`; the
-  store entry appears once the first release is processed.
+- **F-Droid** - add this project's repository in F-Droid: Settings -> Repositories ->
+  `https://treboada.github.io/OpenSatFinder/repo`, fingerprint
+  `FD:79:B2:59:BE:2D:22:9D:E7:D1:06:81:BD:51:50:03:50:57:D1:17:A4:7A:77:ED:56:F9:17:2F:DB:04:B6:A0`.
+  The listing lives in `fastlane/`; the app is not in the main F-Droid catalogue yet.
 
-Android 7.0 (API 24) or later. The GitHub and F-Droid builds are signed with
-different keys, so switching between them means uninstalling first.
+Android 7.0 (API 24) or later. Both sources ship the same signed APK, so switching
+between them keeps your data.
 
 ## Known limits
 

@@ -1,0 +1,141 @@
+# Publishes a self-hosted F-Droid repository on GitHub Pages.
+#
+# The APKs come from the GitHub releases (already built and signed by the
+# "Release APK" workflow), so this workflow never compiles anything: it indexes
+# the APKs, signs the index with a key that only lives in repository secrets,
+# and pushes the result to the `gh-pages` branch, which Pages serves.
+#
+# One-time setup, outside this file:
+#   - an `fdroidrepo` alias inside the release keystore, uploaded to the
+#     KEYSTORE_BASE64 secret (see "Own F-Droid repository" in CONTRIBUTING.md),
+#   - Settings -> Pages -> Source: "Deploy from a branch", branch `gh-pages`,
+#     folder `/ (root)`.
+
+name: F-Droid repository
+
+on:
+  # Runs after the release workflow, so the signed APK is already attached.
+  workflow_run:
+    workflows: ["Release APK"]
+    types: [completed]
+  # Manual runs, e.g. to add a release built before this workflow existed.
+  workflow_dispatch:
+
+permissions:
+  # Read the releases, write the gh-pages branch.
+  contents: write
+
+concurrency:
+  group: fdroid-repo
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install fdroidserver
+        run: |
+          pipx install fdroidserver
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          # apksigner (verifies the APKs and signs the index) comes from the
+          # build-tools of the runner's Android SDK.
+          if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME/build-tools" ]; then
+            build_tools="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+            echo "$build_tools" >> "$GITHUB_PATH"
+          fi
+          command -v apksigner >/dev/null || echo "::error::apksigner not found on PATH"
+
+      - name: Collect the signed APKs from every release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p repo
+          for tag in $(gh release list --repo "$GITHUB_REPOSITORY" --limit 100 --json tagName --jq '.[].tagName'); do
+            gh release download "$tag" --repo "$GITHUB_REPOSITORY" \
+              --pattern 'OpenSatFinder-*.apk' --dir repo --clobber || true
+          done
+          ls -l repo/
+          ls repo/*.apk >/dev/null 2>&1 || { echo "No release APKs found: nothing to index"; exit 1; }
+
+      - name: Restore the signing keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE_BASE64 }}
+          STOREPASS: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE" || { echo "Secret KEYSTORE_BASE64 is empty"; exit 1; }
+          printf '%s' "$KEYSTORE" | base64 -d > repo.jks
+          chmod 600 repo.jks
+          # Fail early if the keystore does not carry the index alias yet.
+          keytool -list -keystore repo.jks -storepass "$STOREPASS" -alias fdroidrepo >/dev/null || {
+            echo "The keystore has no 'fdroidrepo' alias: add it and re-upload KEYSTORE_BASE64"; exit 1; }
+          keytool -list -v -keystore repo.jks -storepass "$STOREPASS" -alias fdroidrepo \
+            | grep -E 'SHA256:|Alias name:' || true
+
+      - name: Describe the app from the fastlane listing
+        run: |
+          pkg=net.treboada.opensatfinder
+          loc=fastlane/metadata/android/en-US
+          mkdir -p "metadata/$pkg"
+          cp -r fastlane/metadata/android/* "metadata/$pkg/"
+          {
+            echo "Categories: Navigation, Science & Education"
+            echo "License: GPL-3.0-or-later"
+            echo "AuthorName: Rafa Couto"
+            echo "WebSite: https://github.com/$GITHUB_REPOSITORY"
+            echo "SourceCode: https://github.com/$GITHUB_REPOSITORY"
+            echo "IssueTracker: https://github.com/$GITHUB_REPOSITORY/issues"
+            echo "Changelog: https://github.com/$GITHUB_REPOSITORY/releases"
+            echo "Name: $(cat "$loc/title.txt")"
+            echo "Summary: $(cat "$loc/short_description.txt")"
+            echo "Description: |-"
+            sed 's/^/  /' "$loc/full_description.txt"
+          } > "metadata/$pkg.yml"
+          cat "metadata/$pkg.yml"
+
+      - name: Write the fdroid configuration
+        env:
+          STOREPASS: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          test -n "$STOREPASS" || { echo "Secret KEYSTORE_PASSWORD is empty"; exit 1; }
+          cat > config.yml <<EOF
+          repo_url: https://treboada.github.io/OpenSatFinder/repo
+          repo_name: OpenSatFinder
+          repo_keyalias: fdroidrepo
+          keystore: repo.jks
+          keystorepass: "$STOREPASS"
+          # PKCS12 keystores use the store password for the key too.
+          keypass: "$STOREPASS"
+          archive_older: 0
+          EOF
+          chmod 600 config.yml
+
+      - name: Build and sign the index
+        run: fdroid update --verbose
+
+      - name: Publish to the gh-pages branch
+        run: |
+          mkdir -p site
+          cp -r repo site/repo
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>OpenSatFinder F-Droid repository</title>
+          <h1>OpenSatFinder</h1>
+          <p>F-Droid repository for
+          <a href="https://github.com/Treboada/OpenSatFinder">OpenSatFinder</a>.</p>
+          <p>Add <code>https://treboada.github.io/OpenSatFinder/repo</code> in the
+          F-Droid client under Settings &rarr; Repositories.</p>
+          HTML
+          cd site
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "F-Droid repository at ${GITHUB_SHA}"
+          git push -q --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
