@@ -20,3 +20,6 @@ captures/
 .codewhale/
 .DS_Store
 Thumbs.db
+
+# Local clones and scratch checkouts
+fork-fdroiddata/
