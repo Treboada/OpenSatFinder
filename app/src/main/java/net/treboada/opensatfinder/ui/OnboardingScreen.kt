@@ -10,7 +10,9 @@ import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,12 +24,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -182,9 +183,10 @@ fun OnboardingScreen(
 }
 
 /**
- * The answer to "which satellite": a list that opens, one row per candidate. The exposed
- * dropdown is still an experimental Material API; it is opted into here and nowhere else, so
- * the opt-in is one function to revisit rather than the whole screen.
+ * The answer to "which satellite": the field shows the pick and the menu under it lists the
+ * candidates. A plain [DropdownMenu] rather than the exposed one: the exposed variant is still
+ * experimental and sizes its menu from the anchor's measured bounds, which is where this list
+ * came out empty.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -194,7 +196,7 @@ private fun SatelliteChooser(
     onSelect: (GeostationarySatellite) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+    Box {
         OutlinedTextField(
             value = selected?.name.orEmpty(),
             onValueChange = {},
@@ -204,11 +206,19 @@ private fun SatelliteChooser(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier =
                 Modifier
-                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                     .fillMaxWidth()
                     .testTag("onboarding_satellite"),
         )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        // A read-only field does not report taps; this layer over it is what opens the menu.
+        Box(
+            modifier =
+                Modifier
+                    .matchParentSize()
+                    .clickable(onClickLabel = stringResource(R.string.onboarding_choose_field)) {
+                        expanded = true
+                    },
+        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             candidates.forEach { satellite ->
                 DropdownMenuItem(
                     text = { Text(satellite.name) },

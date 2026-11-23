@@ -100,11 +100,19 @@ fun App(
     val welcomeNames = favourites.names.ifEmpty { DEFAULT_FAVOURITES }
     val welcome =
         remember(welcomeNames, lastPosition) {
+            // Stars a catalogue regeneration no longer carries would leave the page with nothing
+            // to pick; the defaults stand in, never the whole catalogue.
             welcomeSatellites(
                 catalogue = SatelliteCatalog.all,
                 names = welcomeNames,
                 observer = lastPosition,
-            )
+            ).ifEmpty {
+                welcomeSatellites(
+                    catalogue = SatelliteCatalog.all,
+                    names = DEFAULT_FAVOURITES,
+                    observer = lastPosition,
+                )
+            }
         }
     val picked = welcome.firstOrNull { it.name == welcomePick }
     val pickSatellite = { satellite: net.treboada.opensatfinder.pointing.GeostationarySatellite ->
