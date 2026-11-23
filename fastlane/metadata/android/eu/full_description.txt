@@ -1,0 +1,23 @@
+OpenSatFinder-ek telefonoa parabola bat apuntatzeko tresna bihurtzen du.
+
+Aukeratu satelite bat app-ak dakarren satelite geoezegonkorren katalogoan. Iparrorratzak
+erakusten du nora apuntatzen duen telefonoak eta non dagoen satelitea; azpiko arkuak
+elevazioa erakusten du, horizontearen gaineko angelua, telefonoarena eta satelitearena.
+Biratu eta igo pantaila berde jarri arte: hori da antenak begiratu behar duen tokitik bi
+gradu baino gutxiagora egotea. Bi tonuk, batek rumboarentzat eta besteak elevazioarentzat,
+pantailari begiratu gabe apuntatzeko aukera ematen dute.
+
+• Iparrorratza, deklinazio magnetikoarekin zuzendua, zure posiziotik abiatuta
+• Elevazio-neurgailua: telefonoaren inklinazioa satelitearen elevazioaren aurrean
+• CelesTrak-ek argitaratzen dituen satelite geoezegonkor guztiak, bilaketarekin eta
+  elevazioaren arabera ordenatuta
+• Gogokoak eta horizontearen azpiko sateliteak ezkutatzen dituen ezarpena
+• Seinale entzungarriak, bost bolumen-mailatan
+• Zortzi hizkuntza: alemana, ingelesa, euskara, frantsesa, galiziera, katalana,
+  portugesa, gaztelania
+
+Pribatutasuna: kokapena ez da inoiz telefonotik ateratzen. App-ak ez du sare-baimenik:
+konturik ez, jarraipenik ez, publizitaterik ez eta erosketarik ez.
+
+OpenSatFinder software librea da, GNU GPL v3 edo berriagoarekin. Kodea hemen dago:
+https://github.com/Treboada/OpenSatFinder

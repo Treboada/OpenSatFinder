@@ -1,0 +1,118 @@
+# Builds the APK for a published release and attaches it to that release.
+#
+# The Gradle build stays signing-free on purpose: it produces an unsigned release
+# APK, exactly what F-Droid rebuilds from the same tag. Signing happens here, with
+# a key that lives only in repository secrets, so the binary from GitHub Releases
+# can be installed while the repository carries no keystore.
+
+name: Release APK
+
+on:
+  release:
+    types: [published]
+
+# Needed to attach the APK to the release.
+permissions:
+  contents: write
+
+# One run per tag; a re-published release re-uploads the same asset name.
+concurrency:
+  group: release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  apk:
+    name: Build, sign and attach the APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # An unsigned APK cannot be installed, so fail before spending a runner on a
+      # build that cannot be published.
+      - name: Check the signing secrets are configured
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          missing=()
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            [[ -n "${!name}" ]] || missing+=("$name")
+          done
+          if (( ${#missing[@]} )); then
+            echo "::error::Missing repository secret(s): ${missing[*]}. The release APK is signed with this key; see README, 'Releasing'."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # A release labelled 1.0.0 that builds a 0.9.0 APK is a release nobody can
+      # trust; stop here instead of publishing it.
+      - name: Check the tag matches versionName
+        shell: bash
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="$(sed -n 's/.*versionName *= *"\([^"]*\)".*/\1/p' app/build.gradle.kts | head -1)"
+          if [[ -z "$version" ]]; then
+            echo "::error::No versionName in app/build.gradle.kts"
+            exit 1
+          fi
+          if [[ "${TAG#v}" != "$version" ]]; then
+            echo "::error::Tag $TAG does not match versionName $version in app/build.gradle.kts"
+            exit 1
+          fi
+          echo "APK_VERSION=$version" >> "$GITHUB_ENV"
+
+      # Unit tests include FastlaneListingTest, which fails when the listing has no
+      # changelog for this version code.
+      - name: Unit tests
+        run: ./gradlew --no-daemon :app:testDebugUnitTest
+
+      - name: Assemble the release APK
+        run: ./gradlew --no-daemon :app:assembleRelease
+
+      - name: Sign the APK
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          keystore="$RUNNER_TEMP/release.jks"
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$keystore"
+
+          # Sign with the newest build-tools on the runner, not with a guess at the
+          # version AGP downloaded.
+          build_tools="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)"
+          build_tools="${build_tools%/}"
+          "$build_tools/apksigner" sign \
+            --ks "$keystore" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass env:KEYSTORE_PASSWORD \
+            --key-pass env:KEY_PASSWORD \
+            --out "OpenSatFinder-$APK_VERSION.apk" \
+            app/build/outputs/apk/release/app-release-unsigned.apk
+          "$build_tools/apksigner" verify --print-certs "OpenSatFinder-$APK_VERSION.apk"
+
+          rm -f "$keystore"
+
+      - name: Attach the APK to the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" "OpenSatFinder-$APK_VERSION.apk" --clobber

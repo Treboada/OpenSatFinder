@@ -1,0 +1,23 @@
+OpenSatFinder macht dein Telefon zum Instrument, mit dem du eine Satellitenschüssel
+ausrichtest.
+
+Wähle einen Satelliten aus dem eingebauten Katalog geostationärer Satelliten. Der Kompass
+zeigt, wohin das Telefon zeigt und wo der Satellit steht; der Bogen darunter zeigt den
+Höhenwinkel über dem Horizont, für das Telefon und für den Satelliten. Dreh und neige, bis
+der Bildschirm grün wird: das sind weniger als zwei Grad Abstand von der Richtung, in die
+die Schüssel schauen muss. Zwei Töne, einer für die Peilung und einer für den Höhenwinkel,
+lassen dich zielen, ohne auf den Bildschirm zu sehen.
+
+• Kompass, um die magnetische Missweisung korrigiert, aus deinem Standort
+• Höhenwinkel-Anzeige: die Neigung des Telefons gegen den Höhenwinkel des Satelliten
+• Alle geostationären Satelliten, die CelesTrak führt, durchsuchbar und nach Höhe sortiert
+• Favoriten und eine Einstellung, die Satelliten unter dem Horizont ausblendet
+• Hörbare Signale in fünf Lautstärkestufen
+• Acht Sprachen: Deutsch, Englisch, Baskisch, Französisch, Galicisch, Katalanisch,
+  Portugiesisch, Spanisch
+
+Datenschutz: der Standort verlässt das Telefon nie. Die App hat keine Netzwerkberechtigung:
+kein Konto, keine Verfolgung, keine Werbung und nichts zu kaufen.
+
+OpenSatFinder ist freie Software unter der GNU GPL v3 oder später. Der Quelltext liegt auf
+https://github.com/Treboada/OpenSatFinder

@@ -1,0 +1,5 @@
+First release.
+
+• A compass and an elevation gauge that aim a dish at a geostationary satellite
+• Every satellite CelesTrak lists, searchable, with favourites
+• Audible cues, light and dark themes, eight languages

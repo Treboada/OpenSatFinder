@@ -1,0 +1,5 @@
+Primera versió.
+
+• Brúixola i mesurador d'elevació per apuntar una parabòlica
+• Catàleg de satèl·lits geoestacionaris amb cerca i favorits
+• Senyals sonores, temes clar i fosc, vuit idiomes

@@ -1,0 +1,5 @@
+Primera versión.
+
+• Brújula y medidor de elevación para apuntar una parabólica
+• Catálogo de satélites geoestacionarios con búsqueda y favoritos
+• Señales sonoras, temas claro y oscuro, ocho idiomas

@@ -1,0 +1,21 @@
+OpenSatFinder converteix el mòbil en l'instrument amb què apuntar una parabòlica.
+
+Tria un satèl·lit del catàleg de satèl·lits geoestacionaris que porta l'aplicació. La
+brúixola mostra cap on apunta el mòbil i on és el satèl·lit; l'arc de sota mostra
+l'elevació, l'angle sobre l'horitzó, del mòbil i del satèl·lit. Gira i aixeca fins que la
+pantalla es posi verda: això és ser a menys de dos graus d'on ha de mirar l'antena. Dos
+tons, un per al rumb i un altre per a l'elevació, permeten apuntar sense mirar la pantalla.
+
+• Brúixola corregida amb la declinació magnètica, a partir de la teva posició
+• Mesurador d'elevació: la inclinació del mòbil enfront de l'elevació del satèl·lit
+• Tots els satèl·lits geoestacionaris que publica CelesTrak, amb cerca i ordenats per
+  elevació
+• Favorits i un ajust que amaga els satèl·lits per sota de l'horitzó
+• Senyals sonores en cinc nivells de volum
+• Vuit idiomes: català, èuscar, francès, gallec, anglès, alemany, portuguès, castellà
+
+Privadesa: la posició no surt mai del mòbil. L'aplicació no té permís de xarxa: sense
+compte, sense seguiment, sense publicitat i res a comprar.
+
+OpenSatFinder és programari lliure, amb llicència GNU GPL v3 o posterior. El codi és a
+https://github.com/Treboada/OpenSatFinder

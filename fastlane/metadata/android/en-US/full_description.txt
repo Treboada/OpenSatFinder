@@ -1,0 +1,22 @@
+OpenSatFinder turns your phone into the instrument you use to aim a satellite dish.
+
+Choose a satellite from the built-in catalogue of geostationary satellites. The compass
+shows where the phone is pointing and where the satellite sits; the arc underneath shows
+the elevation, the angle above the horizon, for the phone and for the satellite. Turn and
+lift until the screen goes green: that is within two degrees of where the dish has to
+look. Two tones, one for the bearing and one for the elevation, let you aim without
+watching the screen.
+
+• Compass corrected for magnetic declination, from your position
+• Elevation gauge: the phone's tilt against the satellite's own elevation
+• Every geostationary satellite CelesTrak lists, searchable, ordered by elevation
+• Favourites, and a setting that hides the satellites below the horizon
+• Audible cues in five volume steps
+• Eight languages: Catalan, English, Basque, French, Galician, German, Portuguese,
+  Spanish
+
+Privacy: the position never leaves the phone. The app has no network permission at all:
+no account, no tracking, no advertising and nothing to buy.
+
+OpenSatFinder is free software, licensed under the GNU GPL v3 or later. The source is at
+https://github.com/Treboada/OpenSatFinder

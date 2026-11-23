@@ -1,0 +1,5 @@
+Primeira versão.
+
+• Bússola e medidor de elevação para apontar uma parabólica
+• Catálogo de satélites geoestacionários com pesquisa e favoritos
+• Sinais sonoros, temas claro e escuro, oito idiomas

@@ -1,0 +1,21 @@
+OpenSatFinder converte o móbil no instrumento co que apuntar unha parabólica.
+
+Escolle un satélite do catálogo de satélites xeoestacionarios que trae a aplicación. O
+compás mostra cara a onde apunta o móbil e onde está o satélite; o arco de abaixo mostra a
+elevación, o ángulo sobre o horizonte, do móbil e do satélite. Xira e sobe ata que a
+pantalla se poña verde: iso é estar a menos de dous graos de onde ten que mirar a antena.
+Dous tons, un para o rumbo e outro para a elevación, permiten apuntar sen mirar a pantalla.
+
+• Compás corrixido coa declinación magnética, a partir da túa posición
+• Medidor de elevación: a inclinación do móbil fronte á elevación do satélite
+• Todos os satélites xeoestacionarios que publica CelesTrak, con busca e ordenados pola
+  elevación
+• Favoritos e un axuste que agocha os satélites por baixo do horizonte
+• Sinais sonoros en cinco niveis de volume
+• Oito idiomas: alemán, catalán, éuscaro, francés, galego, inglés, portugués, castelán
+
+Privacidade: a posición non sae nunca do móbil. A aplicación non ten permiso de rede:
+sen conta, sen seguimento, sen publicidade e nada que comprar.
+
+OpenSatFinder é software libre, con licenza GNU GPL v3 ou posterior. O código está en
+https://github.com/Treboada/OpenSatFinder

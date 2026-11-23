@@ -1,0 +1,5 @@
+Primeira versión.
+
+• Compás e medidor de elevación para apuntar unha parabólica
+• Catálogo de satélites xeoestacionarios con busca e favoritos
+• Sinais sonoros, temas claro e escuro, oito idiomas

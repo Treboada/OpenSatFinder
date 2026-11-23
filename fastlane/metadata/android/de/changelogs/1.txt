@@ -1,0 +1,5 @@
+Erste Version.
+
+• Kompass und Höhenwinkel-Anzeige für die Satellitenschüssel
+• Katalog geostationärer Satelliten mit Suche und Favoriten
+• Hörbare Signale, helles und dunkles Design, acht Sprachen

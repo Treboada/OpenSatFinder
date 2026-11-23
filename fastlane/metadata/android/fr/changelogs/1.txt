@@ -1,0 +1,5 @@
+Première version.
+
+• Boussole et jauge d'élévation pour pointer une parabole
+• Catalogue de satellites géostationnaires avec recherche et favoris
+• Signaux sonores, thèmes clair et sombre, huit langues

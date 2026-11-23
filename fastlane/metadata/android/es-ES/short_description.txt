@@ -1,0 +1,1 @@
+Apunta una parabólica a un satélite geoestacionario con el móvil.

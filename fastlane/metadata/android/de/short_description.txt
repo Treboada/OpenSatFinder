@@ -1,0 +1,1 @@
+Satellitenschüssel mit dem Telefon auf einen geostationären Satelliten richten.

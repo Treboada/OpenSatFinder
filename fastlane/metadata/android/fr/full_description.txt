@@ -1,0 +1,23 @@
+OpenSatFinder transforme votre téléphone en l'instrument qui pointe une parabole.
+
+Choisissez un satellite dans le catalogue de satellites géostationnaires intégré. La
+boussole montre où pointe le téléphone et où se trouve le satellite ; l'arc en dessous
+montre l'élévation, l'angle au-dessus de l'horizon, pour le téléphone et pour le satellite.
+Tournez et inclinez jusqu'à ce que l'écran passe au vert : c'est à moins de deux degrés de
+la direction que doit viser la parabole. Deux tonalités, une pour le cap et une pour
+l'élévation, permettent de viser sans regarder l'écran.
+
+• Boussole corrigée de la déclinaison magnétique, à partir de votre position
+• Jauge d'élévation : l'inclinaison du téléphone face à l'élévation du satellite
+• Tous les satellites géostationnaires publiés par CelesTrak, avec recherche et triés par
+  élévation
+• Favoris, et un réglage qui masque les satellites sous l'horizon
+• Signaux sonores en cinq niveaux de volume
+• Huit langues : allemand, anglais, basque, catalan, espagnol, français, galicien,
+  portugais
+
+Confidentialité : la position ne quitte jamais le téléphone. L'application n'a aucune
+autorisation réseau : pas de compte, pas de pistage, pas de publicité et rien à acheter.
+
+OpenSatFinder est un logiciel libre, sous licence GNU GPL v3 ou ultérieure. Le code est sur
+https://github.com/Treboada/OpenSatFinder

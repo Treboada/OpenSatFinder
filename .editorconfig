@@ -1,0 +1,6 @@
+root = true
+
+# Compose functions are PascalCase by convention (CompassScreen, App, ...), so
+# ktlint's function-naming rule must not apply to the ones annotated @Composable.
+[*.{kt,kts}]
+ktlint_function_naming_ignore_when_annotated_with = Composable

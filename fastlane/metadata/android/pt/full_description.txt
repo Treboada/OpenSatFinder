@@ -1,0 +1,21 @@
+O OpenSatFinder transforma o telefone no instrumento com que apontar uma parabólica.
+
+Escolha um satélite no catálogo de satélites geoestacionários que a aplicação traz. A
+bússola mostra para onde aponta o telefone e onde está o satélite; o arco por baixo mostra
+a elevação, o ângulo acima do horizonte, do telefone e do satélite. Gire e suba até o ecrã
+ficar verde: isso é estar a menos de dois graus de onde a antena tem de olhar. Dois tons,
+um para o rumo e outro para a elevação, permitem apontar sem olhar para o ecrã.
+
+• Bússola corrigida com a declinação magnética, a partir da sua posição
+• Medidor de elevação: a inclinação do telefone face à elevação do satélite
+• Todos os satélites geoestacionários que a CelesTrak publica, com pesquisa e ordenados
+  pela elevação
+• Favoritos e uma definição que esconde os satélites abaixo do horizonte
+• Sinais sonoros em cinco níveis de volume
+• Oito idiomas: alemão, catalão, espanhol, basco, francês, galego, inglês, português
+
+Privacidade: a posição nunca sai do telefone. A aplicação não tem permissão de rede: sem
+conta, sem seguimento, sem publicidade e nada para comprar.
+
+O OpenSatFinder é software livre, com licença GNU GPL v3 ou posterior. O código está em
+https://github.com/Treboada/OpenSatFinder
